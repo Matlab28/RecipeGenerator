@@ -11,17 +11,18 @@
             font-family: 'Poppins', Arial, sans-serif;
             background-color: #3e3e3e; /* Lighter background color */
             color: #f0f0f0;
-            overflow: hidden; /* Prevent scrolling when loading */
+            margin: 0; /* Reset margin */
+            padding: 0; /* Reset padding */
+            overflow-y: auto; /* Enable vertical scrolling */
         }
         .container {
             max-width: 600px;
-            margin: 0 auto;
+            margin: 20px auto; /* Added margin for top and bottom */
             padding: 20px;
             border: 1px solid #444;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             background-color: #444; /* Slightly lighter background for container */
-            margin-top: 50px;
             position: relative;
             z-index: 2; /* Ensure container is above blur */
         }
@@ -83,9 +84,9 @@
             display: none; /* Hidden by default */
         }
         .spinner {
-            border: 6px solid rgba(255, 255, 255, 0.3); /* Thinner spinner */
+            border: 4px solid rgba(255, 255, 255, 0.3); /* Thinner spinner */
             border-radius: 50%;
-            border-top: 6px solid #fff; /* Thinner top border */
+            border-top: 4px solid #fff; /* Thinner top border */
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
