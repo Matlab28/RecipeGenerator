@@ -106,6 +106,13 @@
 <div class="container" id="mainContainer">
     <h1>Recipe Generator</h1>
     <form id="recipeForm">
+        <label for="language">Response Language</label>
+        <select id="language" name="language" required>
+            <option value="English" selected>English</option>
+            <option value="Azerbaijani">Azerbaijani</option>
+            <option value="Russian">Russian</option>
+        </select>
+
         <label for="ingredients">Ingredients</label>
         <textarea id="ingredients" name="ingredients" placeholder="Enter ingredients, separated by commas" rows="4" required></textarea>
 
@@ -152,8 +159,9 @@
 
         const ingredients = document.getElementById('ingredients').value;
         const cuisine = document.getElementById('cuisine').value;
+        const language = document.getElementById('language').value; // Get selected language
 
-        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients}.`;
+        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients} in ${language}.`;
 
         try {
             const result = await model.generateContent(promptMsg);
