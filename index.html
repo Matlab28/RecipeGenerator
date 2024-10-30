@@ -161,7 +161,7 @@
         const cuisine = document.getElementById('cuisine').value;
         const language = document.getElementById('language').value; // Get selected language
 
-        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients} in ${language}.`;
+        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients}. Give response in ${language} language. If ${language} is Azerbaijani, it means give the response in Azerbaijani, if ${language} is English, it means give the response in English, if ${language} is Russian, it means give the response in Russian`;
 
         try {
             const result = await model.generateContent(promptMsg);
