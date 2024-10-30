@@ -153,15 +153,18 @@
     document.getElementById('recipeForm').addEventListener('submit', async function(event) {
         event.preventDefault();
 
-        // Show loading spinner and blur the background
         document.getElementById('loading').style.display = 'flex';
         document.getElementById('mainContainer').classList.add('blur');
 
         const ingredients = document.getElementById('ingredients').value;
         const cuisine = document.getElementById('cuisine').value;
-        const language = document.getElementById('language').value; // Get selected language
+        const language = document.getElementById('language').value;
 
-        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients}. Give response in ${language} language. If ${language} is Azerbaijani, it means give the response in Azerbaijani, if ${language} is English, it means give the response in English, if ${language} is Russian, it means give the response in Russian. Do not take into the language of ingredients input ${ingredients}. Despite of this, give response in selected langauge ${language}.`;
+        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients}. Give response in ${language}
+         language. If ${language} is Azerbaijani, it means give the response in Azerbaijani, if ${language} is English, it means give 
+         the response in English, if ${language} is Russian, it means give the response in Russian. Do not take into the language of 
+         ingredients input ${ingredients}. Despite of this, give response in selected langauge ${language}. Whenever user enters the 
+         ingredients in Azerbaijani language ${language}, which means it can contain \"əğüöşçı\", understand this too.`;        
         try {
             const result = await model.generateContent(promptMsg);
             const response = await result.response;
