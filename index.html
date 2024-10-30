@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            background-color: #3e3e3e; /* Lighter background color */
+            color: #f0f0f0;
+            overflow: hidden; /* Prevent scrolling when loading */
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            background-color: #444; /* Slightly lighter background for container */
+            margin-top: 50px;
+            position: relative;
+            z-index: 2; /* Ensure container is above blur */
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: 600;
+            background: linear-gradient(45deg, #FFDA43, #007bff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        textarea, select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #555;
+            background-color: #555; /* Slightly lighter for inputs */
+            color: #f0f0f0;
+            font-size: 1em;
+            resize: vertical;
+        }
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #FFDA43, #007bff);
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 15px;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: linear-gradient(45deg, #d1b546, #007bff);
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            background-color: #444;
+        }
+        /* Loading Spinner Styles */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); /* Dark overlay but lighter than before */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 3; /* Above everything else */
+            display: none; /* Hidden by default */
+        }
+        .spinner {
+            border: 6px solid rgba(255, 255, 255, 0.3); /* Thinner spinner */
+            border-radius: 50%;
+            border-top: 6px solid #fff; /* Thinner top border */
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Blur effect */
+        .blur {
+            filter: blur(5px);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainContainer">
+    <h1>Recipe Generator</h1>
+    <form id="recipeForm">
+        <label for="ingredients">Ingredients</label>
+        <textarea id="ingredients" name="ingredients" placeholder="Enter ingredients, separated by commas" rows="4" required></textarea>
+
+        <label for="cuisine">Cuisine Preference</label>
+        <select id="cuisine" name="cuisine" required>
+            <option value="Mexican">Mexican</option>
+            <option value="Italian">Italian</option>
+            <option value="General">General</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Indian">Indian</option>
+        </select>
+
+        <button type="submit">Get Recipe</button>
+    </form>
+    <div id="responseContainer" class="response" style="display: none;"></div>
+</div>
+
+<div id="loading" class="loading">
+    <div class="spinner"></div>
+</div>
+
+<script type="importmap">
+    {
+        "imports": {
+            "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+    }
+</script>
+<script type="module">
+    import { GoogleGenerativeAI } from "@google/generative-ai";
+
+    const API_KEY = "AIzaSyB3GRRnXnOsnRJOhPpLQtWvKf4Bs1Hx-nU"; // Replace with your actual API key
+
+    const genAI = new GoogleGenerativeAI(API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.0-pro" });
+
+    document.getElementById('recipeForm').addEventListener('submit', async function(event) {
+        event.preventDefault();
+
+        // Show loading spinner and blur the background
+        document.getElementById('loading').style.display = 'flex';
+        document.getElementById('mainContainer').classList.add('blur');
+
+        const ingredients = document.getElementById('ingredients').value;
+        const cuisine = document.getElementById('cuisine').value;
+
+        const promptMsg = `Generate a recipe for a ${cuisine} dish using these ingredients: ${ingredients}.`;
+
+        try {
+            const result = await model.generateContent(promptMsg);
+            const response = await result.response;
+            const text = await response.text();
+
+            // Remove asterisks from the response
+            const cleanedText = text.replace(/\*/g, '').trim();
+            displayResponse(cleanedText);
+        } catch (error) {
+            displayResponse('Error: ' + error.message);
+        } finally {
+            // Hide loading spinner and remove blur
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('mainContainer').classList.remove('blur');
+        }
+    });
+
+    function displayResponse(responseText) {
+        const responseContainer = document.getElementById('responseContainer');
+        responseContainer.style.display = 'block';
+        responseContainer.innerText = responseText || 'No response from AI';
+    }
+</script>
+
+</body>
+</html>
